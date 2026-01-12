@@ -27,8 +27,8 @@ class Connect4Model(nn.Module):
 
         x = F.relu(self.fc_common(x))
 
-        val = self.fc_value(x)  # (Batch, 1)
-        adv = self.fc_advantage(x)  # (Batch, 7)
+        val = self.fc_value(x)
+        adv = self.fc_advantage(x)
 
 
         return val + (adv - adv.mean(dim=1, keepdim=True))
