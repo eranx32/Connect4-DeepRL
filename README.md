@@ -38,8 +38,46 @@ The brain of the agent (`Connect4Model.py`) is designed to capture the spatial n
 ```bash
 ├── agent.py            # The RL Agent (DQN logic, Experience Replay, Epsilon Greedy)
 ├── connect4Model.py    # PyTorch Neural Network (Dueling DQN implementation)
-├── connect4_env.py     # Game Environment & Logic (Fast convolution-based win check)
-├── main3.py            # Main training loop with Curriculum Learning
+├── connect4Env.py     # Game Environment & Logic (Fast convolution-based win check)
+├── main.py            # Main training loop with Curriculum Learning
 ├── gui.py              # Interactive Game Interface (Pygame)
 ├── assets/             # Images for the GUI
 └── models/             # Saved trained models (.pth)
+```
+
+## ⚙️ Installation & Usage
+
+### Prerequisites
+Make sure you have Python installed, then install the dependencies:
+
+```bash
+pip install torch numpy pygame scipy tqdm
+```
+### 1. Train the Agent
+To start the training process (this may take hours for high proficiency):
+
+```bash
+
+python main.py
+```
+The script saves the best model to the models/ directory automatically.
+
+### 2. Play Against the AI
+
+Launch the GUI to challenge your trained model:
+
+```Bash
+
+python gui.py
+```
+
+## 📈 Training Strategy (Curriculum)
+To prevent the agent from getting stuck in local optima, I implemented a dynamic training loop:
+
+1. **Phase 1 (Exploration):** High Epsilon, Rival is 100% random. Agent learns basic rules.
+
+2. **Phase 2 (Adaptation):** Epsilon decays, Rival becomes smarter (mixes random moves with heuristic blocks).
+
+3. **Phase 3 (Mastery):** Low Epsilon, Rival plays near-perfect heuristic game. Agent must learn advanced tactics to win.
+
+
