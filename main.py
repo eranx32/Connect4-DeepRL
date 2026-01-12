@@ -1,4 +1,4 @@
-from connect4Env import Connect4Env
+from connect4_env import Connect4Env
 import numpy as np
 from agent import Agent
 from tqdm import tqdm  # אל תשכח להתקין: pip install tqdm

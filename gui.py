@@ -8,7 +8,6 @@ import glob
 from connect4Env import Connect4Env, check_winner
 from agent import Agent
 
-# --- הגדרות ---
 SQUARESIZE = 100
 RADIUS = int(SQUARESIZE / 2 - 5)
 ROW_COUNT = 6
@@ -17,7 +16,6 @@ width = COLUMN_COUNT * SQUARESIZE
 height = (ROW_COUNT + 1) * SQUARESIZE
 size = (width, height)
 
-# צבעים לגיבוי (אם אין תמונות)
 BLUE = (0, 0, 255)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -30,11 +28,9 @@ class AssetManager:
         self.red_img = None
         self.yellow_img = None
 
-        # נסיון לטעון תמונות
         try:
             if os.path.exists('assets/board.png'):
                 loaded_board = pygame.image.load('assets/board.png')
-                # אם יש תמונה, חייבים לוודא שהיא תומכת בשקיפות (convert_alpha)
                 self.board_img = pygame.transform.smoothscale(loaded_board,
                                                               (width, height - SQUARESIZE)).convert_alpha()
 
@@ -50,34 +46,26 @@ class AssetManager:
             print(f"Could not load images: {e}. Using procedural graphics.")
             self.use_images = False
 
-        # --- התיקון הגדול: יצירת לוח פרוצדורלי עם שקיפות ---
         if not self.use_images:
-            # אנחנו יוצרים משטח חדש שיהיה הלוח שלנו
             self.board_surf = pygame.Surface((width, height - SQUARESIZE))
 
-            # צובעים את כולו בכחול
             self.board_surf.fill(BLUE)
 
-            # מציירים עליו את העיגולים בשחור
             for c in range(COLUMN_COUNT):
                 for r in range(ROW_COUNT):
                     center = (int(c * SQUARESIZE + SQUARESIZE / 2), int(r * SQUARESIZE + SQUARESIZE / 2))
                     pygame.draw.circle(self.board_surf, BLACK, center, RADIUS)
 
-            # מילת הקסם! אומרים לפייתון שכל מה ששחור במשטח הזה - הופך לשקוף
             self.board_surf.set_colorkey(BLACK)
 
     def draw_board_overlay(self, screen):
         if self.use_images:
             screen.blit(self.board_img, (0, SQUARESIZE))
         else:
-            # עכשיו אנחנו פשוט מדביקים את המשטח שהכנו מראש (עם החורים השקופים)
             screen.blit(self.board_surf, (0, SQUARESIZE))
 
     def draw_piece(self, screen, col, row, player, y_offset=0):
-        # ... (שאר הפונקציה נשאר אותו דבר כמו בתיקון הקודם) ...
 
-        # חישוב המיקום
         if y_offset != 0:
             y = y_offset
             x = col * SQUARESIZE
@@ -104,53 +92,41 @@ def get_latest_model_path():
 
 
 def animate_drop(screen, assets, board_state, col, row, player):
-    """
-    פונקציה חוסמת שמבצעת את האנימציה של הנפילה והקפיצה
-    """
-    # פיזיקה
-    y = 0  # מתחילים מלמעלה
+
+    y = 0
     target_y = (row + 1) * SQUARESIZE
     velocity = 0
-    gravity = 2.5  # כוח משיכה
-    bounciness = 0.4  # כמה חזק הקפיצה חזרה (0 עד 1)
+    gravity = 2.5
+    bounciness = 0.4
 
     clock = pygame.time.Clock()
     animating = True
 
     while animating:
-        # 1. חישוב פיזיקלי
         velocity += gravity
         y += velocity
 
-        # בדיקת פגיעה בקרקע
         if y >= target_y:
             y = target_y
-            velocity = -velocity * bounciness  # היפוך מהירות (קפיצה)
+            velocity = -velocity * bounciness
 
-            # אם המהירות נמוכה מדי, מפסיקים לקפוץ
             if abs(velocity) < 5:
                 animating = False
 
-        # 2. ציור הפריים
-        screen.fill(BLACK)  # ניקוי מסך
+        screen.fill(BLACK)
 
-        # א. ציור כל הדיסקיות הסטטיות שכבר קיימות בלוח
         for c in range(COLUMN_COUNT):
             for r in range(ROW_COUNT):
                 if board_state[r][c] != 0:
-                    # שים לב: אנחנו לא מציירים את הדיסקית החדשה מהמערך עדיין!
-                    # כי אנחנו באנימציה שלה כרגע
                     if not (c == col and r == row):
                         assets.draw_piece(screen, c, r, board_state[r][c])
 
-        # ב. ציור הדיסקית הנופלת (האנימציה)
         assets.draw_piece(screen, col, row, player, y_offset=y)
 
-        # ג. ציור הלוח מלמעלה (כדי שהדיסקיות יהיו "בפנים")
         assets.draw_board_overlay(screen)
 
         pygame.display.update()
-        clock.tick(60)  # 60 FPS חלק
+        clock.tick(60)
 
 
 def main():
@@ -171,7 +147,6 @@ def main():
 
     board = env.reset(show_board=False)
 
-    # ציור ראשוני
     screen.fill(BLACK)
     assets.draw_board_overlay(screen)
     pygame.display.update()
@@ -185,13 +160,9 @@ def main():
                 sys.exit()
 
             if event.type == pygame.MOUSEMOTION and turn == 1:
-                # ציור דיסקית מרחפת למעלה
-                # מנקים רק את החלק העליון
                 pygame.draw.rect(screen, BLACK, (0, 0, width, SQUARESIZE))
                 posx = event.pos[0]
-                # ציור הדיסקית המרחפת
                 if assets.use_images:
-                    # מרכזים את התמונה סביב העכבר
                     img_x = posx - SQUARESIZE // 2
                     screen.blit(assets.red_img, (img_x, 0))
                 else:
@@ -204,22 +175,18 @@ def main():
                 col = int(math.floor(posx / SQUARESIZE))
 
                 if col in env.get_valid_locations():
-                    # חישוב השורה הפנויה (בשביל האנימציה)
                     row = 0
                     for r in range(5, -1, -1):
                         if board[r][col] == 0:
                             row = r
                             break
 
-                    # הפעלת האנימציה!
                     animate_drop(screen, assets, board, col, row, 1)
 
-                    # עדכון לוגי
                     next_state, reward, done = env.step(col, 1, show_board=False)
                     board = next_state
 
                     if done:
-                        # ציור סופי ליתר ביטחון
                         assets.draw_piece(screen, col, row, 1)  # לוודא שהיא במקום
                         assets.draw_board_overlay(screen)
 
@@ -230,20 +197,16 @@ def main():
 
                     turn = -1
 
-        # --- תור הסוכן ---
         if turn == -1 and not game_over:
-            # אין צורך ב-Wait מלאכותי כי האנימציה לוקחת זמן
 
             col = agent.act(board, env.get_valid_locations())
 
-            # חישוב השורה הפנויה
             row = 0
             for r in range(5, -1, -1):
                 if board[r][col] == 0:
                     row = r
                     break
 
-            # אנימציה לסוכן
             animate_drop(screen, assets, board, col, row, -1)
 
             next_state, reward, done = env.step(col, -1, show_board=False)
