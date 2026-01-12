@@ -38,8 +38,8 @@ The brain of the agent (`Connect4Model.py`) is designed to capture the spatial n
 ```bash
 ├── agent.py            # The RL Agent (DQN logic, Experience Replay, Epsilon Greedy)
 ├── connect4Model.py    # PyTorch Neural Network (Dueling DQN implementation)
-├── connect4Env.py     # Game Environment & Logic (Fast convolution-based win check)
-├── main.py            # Main training loop with Curriculum Learning
+├── connect4Env.py      # Game Environment & Logic (Fast convolution-based win check)
+├── main.py             # Main training loop with Curriculum Learning
 ├── gui.py              # Interactive Game Interface (Pygame)
 ├── assets/             # Images for the GUI
 └── models/             # Saved trained models (.pth)
