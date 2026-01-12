@@ -3,7 +3,7 @@
 > A sophisticated Reinforcement Learning agent that mastered the game of Connect 4 using **Dueling Deep Q-Networks (Dueling DQN)** and **Curriculum Learning**.
 
 <div align="center">
-  <img src="assets/preview.gif" alt="Connect 4 Gameplay" width="600" />
+  <img src="assets/preview.gif" alt="Connect 4 Gameplay" width="300" />
   <br>
   <em>(Add a GIF here of your GUI in action!)</em>
 </div>
