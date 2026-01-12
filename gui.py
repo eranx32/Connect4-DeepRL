@@ -1,7 +1,6 @@
 import pygame
 import sys
 import math
-import numpy as np
 import torch
 import os
 import glob
@@ -187,7 +186,7 @@ def main():
                     board = next_state
 
                     if done:
-                        assets.draw_piece(screen, col, row, 1)  # לוודא שהיא במקום
+                        assets.draw_piece(screen, col, row, 1)
                         assets.draw_board_overlay(screen)
 
                         label = myfont.render("YOU WON!", 1, (255, 0, 0))

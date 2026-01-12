@@ -4,7 +4,7 @@ from torch import nn
 from connect4Model import Connect4Model
 import random
 from collections import deque
-from connect4_env import check_winner
+from connect4Env import check_winner
 
 
 class Agent:

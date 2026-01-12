@@ -49,39 +49,23 @@ class Connect4Env:
 
 
 def check_winner(board, player_val):
-    """
-    board: 2D numpy array (6x7) with values 0, 1, -1
-    player_val: The value to check for (1 or -1)
-    """
 
-    # 1. הגדרת ה"פילטרים" (Kernels) שאנו מחפשים
-    # כל פילטר מייצג כיוון אחר של רצף באורך 4
-
-    # רצף אופקי (שורה)
     horizontal_kernel = np.array([[1, 1, 1, 1]])
 
-    # רצף אנכי (עמודה)
     vertical_kernel = np.array([[1],
                                 [1],
                                 [1],
                                 [1]])
 
-    # רצף אלכסוני (ראשי)
     diag1_kernel = np.eye(4, dtype=int)
 
-    # רצף אלכסוני (משני)
     diag2_kernel = np.fliplr(diag1_kernel)
 
     detection_kernels = [horizontal_kernel, vertical_kernel, diag1_kernel, diag2_kernel]
 
-    # 2. מעבר על כל הפילטרים ובדיקה האם יש התאמה
     for kernel in detection_kernels:
-        # הפונקציה convolve2d "מריצה" את הפילטר על כל הלוח ומסכמת את החפיפות
-        # mode='valid' אומר שלא נבדוק אזורים מחוץ לגבולות הלוח
         conv_result = convolve2d(board, kernel, mode='valid')
 
-        # אם באחד המקומות הסכום שווה ל-4 (או -4), יש לנו מנצח
-        # אנו בודקים אם יש ערך ששווה ל- 4 * הערך של השחקן (כלומר 4 או -4)
         if (conv_result == 4 * player_val).any():
             return True
 
